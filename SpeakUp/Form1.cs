@@ -71,12 +71,11 @@ namespace SpeakUp
                 Properties.Settings.Default.Save();
             }
 
+            // Reading important settings
             string url = Properties.Settings.Default.baseUrl;
             string instancePath = Application.StartupPath;
-            var settings = new CefSettings();
-            settings.CefCommandLineArgs.Add("enable-media-stream", "1");
-            settings.CachePath = instancePath + @"\cache\";
 
+            // Setting form size, position and state
             int x = Properties.Settings.Default.formX;
             int y = Properties.Settings.Default.formY;
             int w = Properties.Settings.Default.formW;
@@ -118,8 +117,14 @@ namespace SpeakUp
 
             centerElements();
 
+            // Initializing browser and settings for browser
+            var settings = new CefSettings();
+            settings.CefCommandLineArgs.Add("enable-media-stream", "1");
+            settings.CachePath = instancePath + @"\cache\";
+
             Cef.Initialize(settings);
 
+            // Checking command line arguments
             string[] argv = Environment.GetCommandLineArgs();
             string joinChannel = null;
             for (int i = 0; i < argv.Length; i++)
@@ -143,9 +148,10 @@ namespace SpeakUp
             browser.TitleChanged += OnBrowserTitleChanged;
             browser.LoadError += OnBrowserLoadError;
 
-            this.Controls.Add(browser);
+            Controls.Add(browser);
 
-
+            // Checking for updates
+            new Dependencies.Update();
         }
 
         private void OnBrowserTitleChanged(object sender, TitleChangedEventArgs args)
