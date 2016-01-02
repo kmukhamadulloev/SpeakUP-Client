@@ -73,20 +73,77 @@ namespace SpeakUp
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Upgrading settings...
+            if (Properties.Settings.Default.appUpgraded)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.appUpgraded = false;
+                Properties.Settings.Default.Save();
+            }
+
             string url = Properties.Settings.Default.baseUrl;
             string instancePath = Application.StartupPath;
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("enable-media-stream", "1");
             settings.CachePath = instancePath + @"\cache\";
 
-            this.Left = Properties.Settings.Default.formX;
-            this.Top = Properties.Settings.Default.formY;
-            this.Width = Properties.Settings.Default.formW;
-            this.Height = Properties.Settings.Default.formH;
+            int x = Properties.Settings.Default.formX;
+            int y = Properties.Settings.Default.formY;
+            int w = Properties.Settings.Default.formW;
+            int h = Properties.Settings.Default.formH;
+            bool isMaximized = Properties.Settings.Default.formMaximized;
+
+            this.Left = x;
+            this.Top = y;
+            this.Width = w;
+            this.Height = h;
+
+            if (w > 100)
+            {
+                Width = w;
+            }
+            else
+            {
+                Width = 800;
+            }
+
+            if (h > 100)
+            {
+                Height = h;
+            }
+            else
+            {
+                Height = 480;
+            }
+
+            SetFormPos(x, y);
+            if (isMaximized)
+            {
+                WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                WindowState = FormWindowState.Normal;
+            }
 
             centerElements();
 
             Cef.Initialize(settings);
+
+            string[] argv = Environment.GetCommandLineArgs();
+            string joinChannel = null;
+            for (int i = 0; i < argv.Length; i++)
+            {
+                if (argv[i].IndexOf("speakup://") >= 0)
+                {
+                    joinChannel = argv[i].Replace("speakup://", "");
+                }
+            }
+
+            if (!String.IsNullOrWhiteSpace(joinChannel))
+            {
+                url = url + "?room=" + joinChannel;
+            }
 
             browser = new ChromiumWebBrowser(url)
             {
@@ -97,6 +154,8 @@ namespace SpeakUp
             browser.LoadError += OnBrowserLoadError;
 
             this.Controls.Add(browser);
+
+
         }
 
         private void OnBrowserTitleChanged(object sender, TitleChangedEventArgs args)
@@ -146,9 +205,9 @@ namespace SpeakUp
         private void saveSizePos(bool saveSettings = true)
         {
             bool formMaximized = (this.WindowState == FormWindowState.Maximized);
+            Properties.Settings.Default.formMaximized = formMaximized;
             if (!formMaximized)
             {
-                Properties.Settings.Default.formMaximized = formMaximized;
                 Properties.Settings.Default.formX = this.Left;
                 Properties.Settings.Default.formY = this.Top;
                 Properties.Settings.Default.formW = this.Width;
@@ -187,6 +246,32 @@ namespace SpeakUp
         private void Form1_Resize(object sender, EventArgs e)
         {
             centerElements();
+        }
+
+        private void SetFormPos(int x, int y)
+        {
+            // requesting current screen
+            System.Drawing.Point mp = Cursor.Position;
+            Screen currentScreen = Screen.FromPoint(mp);
+
+            // determining X
+            if (x != -1 && x < SystemInformation.VirtualScreen.Width)
+            {
+                this.Left = x;
+            }
+            else
+            {
+                this.Left = currentScreen.WorkingArea.Width / 2 - this.Width / 2;
+            }
+            // determining Y
+            if (y != -1 && x < SystemInformation.VirtualScreen.Height)
+            {
+                this.Top = y;
+            }
+            else
+            {
+                this.Top = currentScreen.WorkingArea.Height / 2 - this.Height / 2;
+            }
         }
     }
 }

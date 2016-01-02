@@ -94,5 +94,17 @@ namespace SpeakUp.Properties {
                 this["formMaximized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool appUpgraded {
+            get {
+                return ((bool)(this["appUpgraded"]));
+            }
+            set {
+                this["appUpgraded"] = value;
+            }
+        }
     }
 }
