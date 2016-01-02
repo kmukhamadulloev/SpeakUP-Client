@@ -17,16 +17,6 @@ namespace SpeakUp
     public partial class Form1 : Form
     {
         private ChromiumWebBrowser browser;
-        private string appCss =
-            "<style>" +
-            "* {box-sizing: border-box}" +
-            "body{margin:0; padding:0; font-family: Tahoma, Arial, Ubuntu, sans;background:#123 linear-gradient(#123, #135);}" +
-            "h1{margin: 0 0 10px 0;}" +
-            ".tryAgain{background:#157; color:#fff; padding:5px; border:1px solid #000; text-decoration:none; display: block; text-align: center;}" +
-            ".tryAgain:hover{background:#27b;}" +
-            ".block{max-width:800px; width:90%; border:1px solid #777; position: fixed;  top: 50%; left: 50%;" +
-            "transform: translate(-50%,-50%); border-radius:5px; padding:20px; background: #eee; overflow: hidden;}" +
-            "</style>";
 
         // P/Invoke constants
         private const int WM_SYSCOMMAND = 0x112;
@@ -163,31 +153,8 @@ namespace SpeakUp
             this.InvokeOnUiThreadIfRequired(() => Text = args.Title);
         }
 
-        private string generateHtmlPage(string title, string text)
-        {
-            return "<html>" +
-              "<head>" +
-              "<title>" + title + "</title>" +
-              appCss +
-              "</head>" +
-              "<body>" +
-              "<div class='block'>" + text + "</div>" +
-              "</body>" +
-              "</html>";
-        }
-
         private void OnBrowserLoadError(object sender, LoadErrorEventArgs args)
         {
-            // //if (args.FailedUrl == browser.Address)
-            // //{
-            //     string dataurl = generateHtmlPage(
-            //         "Error",
-            //         "<h1>SpeakUP</h1>" +
-            //         "<p><b>Connection error:</b> " + args.ErrorCode.ToString() + "</p>" +
-            //         "<p><a class='tryAgain' href='" + args.FailedUrl + "'>Try Again</a></p>");
-            //     browser.LoadHtml(dataurl, args.FailedUrl);
-            // //}
-
             this.InvokeOnUiThreadIfRequired(() =>
             {
                 errLabelStatus.Text = "Connection error: " + args.ErrorCode.ToString();
