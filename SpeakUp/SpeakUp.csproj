@@ -94,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\ControlExtensions.cs" />
+    <Compile Include="Dependencies\HashCheck.cs" />
+    <Compile Include="Dependencies\Update.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
