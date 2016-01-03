@@ -45,7 +45,7 @@
             this.errPanel.Location = new System.Drawing.Point(121, 100);
             this.errPanel.Name = "errPanel";
             this.errPanel.Padding = new System.Windows.Forms.Padding(7);
-            this.errPanel.Size = new System.Drawing.Size(477, 119);
+            this.errPanel.Size = new System.Drawing.Size(448, 119);
             this.errPanel.TabIndex = 0;
             this.errPanel.Visible = false;
             // 
@@ -55,7 +55,7 @@
             this.errBtnReload.Location = new System.Drawing.Point(7, 73);
             this.errBtnReload.Margin = new System.Windows.Forms.Padding(10);
             this.errBtnReload.Name = "errBtnReload";
-            this.errBtnReload.Size = new System.Drawing.Size(461, 37);
+            this.errBtnReload.Size = new System.Drawing.Size(432, 37);
             this.errBtnReload.TabIndex = 2;
             this.errBtnReload.Text = "Try Again";
             this.errBtnReload.UseVisualStyleBackColor = true;
@@ -67,7 +67,7 @@
             this.errLabelStatus.Location = new System.Drawing.Point(7, 34);
             this.errLabelStatus.Margin = new System.Windows.Forms.Padding(5, 15, 5, 5);
             this.errLabelStatus.Name = "errLabelStatus";
-            this.errLabelStatus.Size = new System.Drawing.Size(461, 39);
+            this.errLabelStatus.Size = new System.Drawing.Size(432, 39);
             this.errLabelStatus.TabIndex = 1;
             this.errLabelStatus.Text = "Connection error: N/A";
             this.errLabelStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -79,7 +79,7 @@
             this.errLabelTitle.Location = new System.Drawing.Point(7, 7);
             this.errLabelTitle.Margin = new System.Windows.Forms.Padding(5);
             this.errLabelTitle.Name = "errLabelTitle";
-            this.errLabelTitle.Size = new System.Drawing.Size(461, 27);
+            this.errLabelTitle.Size = new System.Drawing.Size(432, 27);
             this.errLabelTitle.TabIndex = 0;
             this.errLabelTitle.Text = "SpeakUP";
             this.errLabelTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -92,7 +92,7 @@
             this.Controls.Add(this.errPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(800, 480);
+            this.MinimumSize = new System.Drawing.Size(640, 360);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "SpeakUP";

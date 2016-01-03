@@ -36,6 +36,7 @@ namespace SpeakUP
 
         // ID for the system menu
         private int SYSMENU_DEV_TOOLS = 0x1;
+        private int SYSMENU_REPORT = 0x2;
 
         public MainForm()
         {
@@ -48,6 +49,7 @@ namespace SpeakUP
             IntPtr hSysMenu = GetSystemMenu(this.Handle, false);
             AppendMenu(hSysMenu, MF_SEPARATOR, 0, string.Empty);
             AppendMenu(hSysMenu, MF_STRING, SYSMENU_DEV_TOOLS, "&Developer Tools");
+            AppendMenu(hSysMenu, MF_STRING, SYSMENU_REPORT, "Report &Issue");
         }
 
         protected override void WndProc(ref Message m)
@@ -59,6 +61,11 @@ namespace SpeakUP
                 browser.ShowDevTools();
             }
 
+            if ((m.Msg == WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_REPORT))
+            {
+                string url = "https://github.com/disqrl/SpeakUP-Client/issues";
+                System.Diagnostics.Process.Start(url);
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
