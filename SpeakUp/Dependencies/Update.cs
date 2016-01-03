@@ -6,9 +6,9 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using SpeakUp.Dependencies;
+using SpeakUP.Dependencies;
 
-namespace SpeakUp.Dependencies
+namespace SpeakUP.Dependencies
 {
     class Update
     {
@@ -63,7 +63,7 @@ namespace SpeakUp.Dependencies
                     StreamReader reader = new StreamReader(stream);
                     content = reader.ReadToEnd();
                 }
-                catch (WebException ex)
+                catch (WebException)
                 {
                     // MessageBox.Show(ex.Message);
                     return;
@@ -84,7 +84,7 @@ namespace SpeakUp.Dependencies
                 if (updVersion > curVersion)
                 {
                     string msg = String.Format(
-                        "New version available! Click 'OK' to update.\nCurrent version: {0}\nVersion on server: {1}",
+                        "New version available! Click 'OK' to update.\n{0} => {1}",
                         curVersion,
                         updVersion);
                     DialogResult res = MessageBox.Show(
