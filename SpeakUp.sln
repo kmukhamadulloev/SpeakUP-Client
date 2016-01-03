@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeakUp", "SpeakUp\SpeakUp.csproj", "{6B58E6D6-BB6C-4373-AC86-8D887936E998}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeakUP", "SpeakUP\SpeakUP.csproj", "{6B58E6D6-BB6C-4373-AC86-8D887936E998}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

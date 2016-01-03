@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace SpeakUp.Controls
+namespace SpeakUP.Controls
 {
     public static class ControlExtensions
     {

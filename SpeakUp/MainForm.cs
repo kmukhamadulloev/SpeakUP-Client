@@ -10,11 +10,11 @@ using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
 using System.Runtime.InteropServices;
-using SpeakUp.Controls;
+using SpeakUP.Controls;
 
-namespace SpeakUp
+namespace SpeakUP
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private ChromiumWebBrowser browser;
 
@@ -37,7 +37,7 @@ namespace SpeakUp
         // ID for the system menu
         private int SYSMENU_DEV_TOOLS = 0x1;
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -61,7 +61,7 @@ namespace SpeakUp
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             // Upgrading settings...
             if (Properties.Settings.Default.appUpgraded)
@@ -74,6 +74,7 @@ namespace SpeakUp
             // Reading important settings
             string url = Properties.Settings.Default.baseUrl;
             string instancePath = Application.StartupPath;
+            string appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             // Setting form size, position and state
             int x = Properties.Settings.Default.formX;
@@ -121,6 +122,11 @@ namespace SpeakUp
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("enable-media-stream", "1");
             settings.CachePath = instancePath + @"\cache\";
+            settings.UserAgent = String.Format(
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{0} Safari/537.36 SpeakUPClient/{1}",
+                Cef.ChromiumVersion,
+                appVersion
+                );
 
             Cef.Initialize(settings);
 
@@ -192,17 +198,17 @@ namespace SpeakUp
             }
         }
 
-        private void Form1_ResizeEnd(object sender, EventArgs e)
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
         {
             saveSizePos();
         }
 
-        private void Form1_LocationChanged(object sender, EventArgs e)
+        private void MainForm_LocationChanged(object sender, EventArgs e)
         {
             saveSizePos();
         }
 
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             saveSizePos(false);
             // save other settings...
@@ -216,7 +222,7 @@ namespace SpeakUp
             browser.Reload();
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
+        private void MainForm_Resize(object sender, EventArgs e)
         {
             centerElements();
         }

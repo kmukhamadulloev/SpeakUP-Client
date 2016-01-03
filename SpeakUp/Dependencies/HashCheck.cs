@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpeakUp.Dependencies
+namespace SpeakUP.Dependencies
 {
     class HashCheck
     {
