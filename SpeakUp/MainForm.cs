@@ -63,7 +63,7 @@ namespace SpeakUP
 
             if ((m.Msg == WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_REPORT))
             {
-                string url = "https://github.com/disqrl/SpeakUP-Client/issues";
+                string url = Properties.Settings.Default.reportIssueUrl;
                 System.Diagnostics.Process.Start(url);
             }
         }
