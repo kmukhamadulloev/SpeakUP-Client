@@ -23,5 +23,8 @@
     <Setting Name="appUpgraded" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="reportIssueUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://github.com/disqrl/SpeakUP-Client/issues</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
