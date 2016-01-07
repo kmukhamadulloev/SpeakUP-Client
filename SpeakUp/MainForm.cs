@@ -11,6 +11,7 @@ using CefSharp;
 using CefSharp.WinForms;
 using System.Runtime.InteropServices;
 using SpeakUP.Controls;
+using SpeakUP.Dependencies;
 
 namespace SpeakUP
 {
@@ -66,6 +67,23 @@ namespace SpeakUP
                 string url = Properties.Settings.Default.reportIssueUrl;
                 System.Diagnostics.Process.Start(url);
             }
+
+            if (m.Msg == NativeMethods.WM_SHOWSPEAKUP)
+            {
+                bringToFront();
+            }
+        }
+
+        private void bringToFront()
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                WindowState = FormWindowState.Normal;
+            }
+
+            bool top = TopMost;
+            TopMost = true;
+            TopMost = top;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -128,6 +146,13 @@ namespace SpeakUP
             // Initializing browser and settings for browser
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("enable-media-stream", "1");
+            settings.CefCommandLineArgs.Add("enable-usermedia-screen-capturing", "1");
+            settings.CefCommandLineArgs.Add("disable-plugins-discovery", "1");
+
+            settings.WindowlessRenderingEnabled = true;
+            settings.CefCommandLineArgs.Add("enable-smooth-scrolling", "1");
+            settings.CefCommandLineArgs.Add("enable-overlay-scrollbar", "1");
+
             settings.CachePath = instancePath + @"\cache\";
             settings.UserAgent = String.Format(
                 "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{0} Safari/537.36 SpeakUPClient/{1}",
