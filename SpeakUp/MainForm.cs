@@ -23,6 +23,7 @@ namespace SpeakUP
         private const int WM_SYSCOMMAND = 0x112;
         private const int MF_STRING = 0x0;
         private const int MF_SEPARATOR = 0x800;
+        private string appVersion;
 
         // P/Invoke declarations
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -99,7 +100,7 @@ namespace SpeakUP
             // Reading important settings
             string url = Properties.Settings.Default.baseUrl;
             string instancePath = Application.StartupPath;
-            string appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             // Setting form size, position and state
             int x = Properties.Settings.Default.formX;
@@ -186,10 +187,12 @@ namespace SpeakUP
             browser.TitleChanged += OnBrowserTitleChanged;
             browser.LoadError += OnBrowserLoadError;
 
+            // browser.RegisterJsObject("speakup_client", someObject);
+
             Controls.Add(browser);
 
             // Checking for updates
-            new Dependencies.Update();
+            new Update();
         }
 
         private void OnBrowserTitleChanged(object sender, TitleChangedEventArgs args)
@@ -262,7 +265,7 @@ namespace SpeakUP
         private void SetFormPos(int x, int y)
         {
             // requesting current screen
-            System.Drawing.Point mp = Cursor.Position;
+            Point mp = Cursor.Position;
             Screen currentScreen = Screen.FromPoint(mp);
 
             // determining X
