@@ -232,22 +232,41 @@ namespace SpeakUP
 
         void timer_Tick(object sender, EventArgs e)
         {
+            Timer timer = (Timer)sender;
+            timer.Stop();
             this.InvokeOnUiThreadIfRequired(() => this.MaximizeBox = true);
         }
 
         private void performMinimizeInCallMode()
         {
-            minimizedBefore = this.Size;
-            this.MinimumSize = minimizedSize;
-            this.Size = minimizedSize;
-            isCallModeMinimized = true;
+            this.InvokeOnUiThreadIfRequired(() =>
+                {
+                    minimizedBefore = this.Size;
+                    this.WindowState = FormWindowState.Normal;
+                    this.MinimumSize = minimizedSize;
+                    this.Size = minimizedSize;
+                    this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+                    isCallModeMinimized = true;
+                    this.TopMost = true;
+                    this.MaximizeBox = false;
+                });
         }
 
         private void performRestoreInCallMode()
         {
-            this.Size = minimizedBefore;
-            this.MinimumSize = new Size(640, 360);
-            isCallModeMinimized = false;
+            this.InvokeOnUiThreadIfRequired(() =>
+                {
+                    if (isCallModeEnabled && isCallModeMinimized)
+                    {
+                        this.WindowState = FormWindowState.Normal;
+                        this.Size = minimizedBefore;
+                        this.MinimumSize = new Size(640, 360);
+                        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+                        this.MaximizeBox = true;
+                        isCallModeMinimized = false;
+                        this.TopMost = false;
+                    }
+                });
         }
 
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -291,8 +310,6 @@ namespace SpeakUP
                 {
                     this.isCallModeEnabled = true;
                     Focus();
-                    TopMost = true;
-                    this.MinimumSize = minimizedSize;
                 });
             }
 
@@ -303,7 +320,6 @@ namespace SpeakUP
                 this.InvokeOnUiThreadIfRequired(() =>
                 {
                     this.isCallModeEnabled = false;
-                    TopMost = false;
                     this.performRestoreInCallMode();
                 });
             }
@@ -334,7 +350,7 @@ namespace SpeakUP
         {
             bool formMaximized = (this.WindowState == FormWindowState.Maximized);
             Properties.Settings.Default.formMaximized = formMaximized;
-            if (!formMaximized)
+            if (!formMaximized && !isCallModeMinimized)
             {
                 Properties.Settings.Default.formX = this.Left;
                 Properties.Settings.Default.formY = this.Top;
