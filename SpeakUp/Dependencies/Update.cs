@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using SpeakUP.Dependencies;
 
 namespace SpeakUP.Dependencies
 {
     class Update
     {
-        private string versionInfoUrl = "https://linksoft.cf/apps/speakup/client/version.txt";
+        private string versionInfoUrl = "https://speakup.cf/client/version.txt";
         public Update()
         {
             Thread thread = new Thread(new ThreadStart(CheckUpdate));
@@ -21,7 +17,7 @@ namespace SpeakUP.Dependencies
 
         public void DownloadUpdate(string url, string hash)
         {
-            string tmpDir = System.IO.Path.GetTempPath();
+            string tmpDir = Path.GetTempPath();
             string tmpName = tmpDir + "SpeakUP_Update.exe";
             WebClient Client = new WebClient();
             Client.DownloadFile(url, tmpName);
