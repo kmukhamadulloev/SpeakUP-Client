@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Security.Permissions;
 using CefSharp;
 using CefSharp.WinForms;
 using System.Runtime.InteropServices;
@@ -21,10 +22,17 @@ namespace SpeakUP
 
         // P/Invoke constants
         private const int WM_SYSCOMMAND = 0x112;
+        private const int SC_MINIMIZE = 0xF020;
         private const int MF_STRING = 0x0;
         private const int MF_SEPARATOR = 0x800;
+
+        // App variables
         private string appVersion;
         private FormWindowState oldFormState = FormWindowState.Normal;
+        private bool isCallModeEnabled = false;
+        private bool isCallModeMinimized = false;
+        private Size minimizedSize = new Size(340, 255);
+        private Size minimizedBefore = new Size();
 
         // P/Invoke declarations
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -55,9 +63,9 @@ namespace SpeakUP
             AppendMenu(hSysMenu, MF_STRING, SYSMENU_REPORT, "Report &Issue");
         }
 
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void WndProc(ref Message m)
         {
-            base.WndProc(ref m);
 
             if ((m.Msg == WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_DEV_TOOLS))
             {
@@ -70,10 +78,28 @@ namespace SpeakUP
                 System.Diagnostics.Process.Start(url);
             }
 
+            if ((m.Msg == WM_SYSCOMMAND) && (((int)m.WParam & 0xfff0) == SC_MINIMIZE))
+            {
+                if (isCallModeEnabled)
+                {
+                    if (this.isCallModeMinimized)
+                    {
+                        this.performRestoreInCallMode();
+                    }
+                    else
+                    {
+                        this.performMinimizeInCallMode();
+                    }
+                    return;
+                }
+            }
+
             if (m.Msg == NativeMethods.WM_SHOWSPEAKUP)
             {
                 bringToFront();
             }
+
+            base.WndProc(ref m);
         }
 
         private void bringToFront()
@@ -209,6 +235,21 @@ namespace SpeakUP
             this.InvokeOnUiThreadIfRequired(() => this.MaximizeBox = true);
         }
 
+        private void performMinimizeInCallMode()
+        {
+            minimizedBefore = this.Size;
+            this.MinimumSize = minimizedSize;
+            this.Size = minimizedSize;
+            isCallModeMinimized = true;
+        }
+
+        private void performRestoreInCallMode()
+        {
+            this.Size = minimizedBefore;
+            this.MinimumSize = new Size(640, 360);
+            isCallModeMinimized = false;
+        }
+
         private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "msgName"){
@@ -239,6 +280,31 @@ namespace SpeakUP
                     MaximizeBox = true;
                     FormBorderStyle = FormBorderStyle.Sizable;
                     WindowState = oldFormState;
+                });
+            }
+
+            if (Properties.Settings.Default.msgName == "enableCallMode")
+            {
+                Properties.Settings.Default.msgName = "";
+                Properties.Settings.Default.msgValue = "";
+                this.InvokeOnUiThreadIfRequired(() =>
+                {
+                    this.isCallModeEnabled = true;
+                    Focus();
+                    TopMost = true;
+                    this.MinimumSize = minimizedSize;
+                });
+            }
+
+            if (Properties.Settings.Default.msgName == "disableCallMode")
+            {
+                Properties.Settings.Default.msgName = "";
+                Properties.Settings.Default.msgValue = "";
+                this.InvokeOnUiThreadIfRequired(() =>
+                {
+                    this.isCallModeEnabled = false;
+                    TopMost = false;
+                    this.performRestoreInCallMode();
                 });
             }
         }

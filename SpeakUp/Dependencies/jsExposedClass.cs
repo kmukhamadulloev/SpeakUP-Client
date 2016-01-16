@@ -48,5 +48,17 @@ namespace SpeakUP.Dependencies
             Properties.Settings.Default.msgValue = "";
             Properties.Settings.Default.msgName = "disableFullScreen";
         }
+
+        public void enableCallMode()
+        {
+            Properties.Settings.Default.msgValue = "";
+            Properties.Settings.Default.msgName = "enableCallMode";
+        }
+
+        public void disableCallMode()
+        {
+            Properties.Settings.Default.msgValue = "";
+            Properties.Settings.Default.msgName = "disableCallMode";
+        }
     }
 }
