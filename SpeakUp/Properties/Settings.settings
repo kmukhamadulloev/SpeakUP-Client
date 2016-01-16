@@ -26,5 +26,11 @@
     <Setting Name="reportIssueUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://github.com/disqrl/SpeakUP-Client/issues</Value>
     </Setting>
+    <Setting Name="msgName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="msgValue" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

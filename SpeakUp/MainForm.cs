@@ -24,6 +24,7 @@ namespace SpeakUP
         private const int MF_STRING = 0x0;
         private const int MF_SEPARATOR = 0x800;
         private string appVersion;
+        private FormWindowState oldFormState = FormWindowState.Normal;
 
         // P/Invoke declarations
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -102,6 +103,9 @@ namespace SpeakUP
             string instancePath = Application.StartupPath;
             appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+            // assign handler for changing settings
+            Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
+
             // Setting form size, position and state
             int x = Properties.Settings.Default.formX;
             int y = Properties.Settings.Default.formY;
@@ -143,6 +147,11 @@ namespace SpeakUP
             }
 
             centerElements();
+
+            Timer timer = new Timer();
+            timer.Interval = 1000;
+            timer.Tick += timer_Tick;
+            timer.Start();
 
             // Initializing browser and settings for browser
             var settings = new CefSettings();
@@ -187,12 +196,99 @@ namespace SpeakUP
             browser.TitleChanged += OnBrowserTitleChanged;
             browser.LoadError += OnBrowserLoadError;
 
-            // browser.RegisterJsObject("speakup_client", someObject);
+            browser.RegisterJsObject("speakup_client", new jsFunctions());
 
             Controls.Add(browser);
 
             // Checking for updates
             new Update();
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            this.InvokeOnUiThreadIfRequired(() => this.MaximizeBox = true);
+        }
+
+        private void Default_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "msgName"){
+                return;
+            }
+
+            if (Properties.Settings.Default.msgName == "enableFullScreen")
+            {
+                Properties.Settings.Default.msgName = "";
+                Properties.Settings.Default.msgValue = "";
+                this.InvokeOnUiThreadIfRequired(() =>
+                {
+                    Focus();
+                    MaximizeBox = false;
+                    FormBorderStyle = FormBorderStyle.None;
+                    oldFormState = WindowState;
+                    WindowState = FormWindowState.Maximized;
+                });
+            }
+
+            if (Properties.Settings.Default.msgName == "disableFullScreen")
+            {
+                Properties.Settings.Default.msgName = "";
+                Properties.Settings.Default.msgValue = "";
+                this.InvokeOnUiThreadIfRequired(() =>
+                {
+                    Focus();
+                    MaximizeBox = true;
+                    FormBorderStyle = FormBorderStyle.Sizable;
+                    WindowState = oldFormState;
+                });
+            }
+        }
+
+        public class jsFunctions
+        {
+            public string appName
+            {
+                get
+                {
+                    return System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+                }
+            }
+
+            private bool isFullScreenEnabled = false;
+
+            public bool isFullScreen
+            {
+                get
+                {
+                    return this.isFullScreenEnabled;
+                }
+            }
+
+            public void appAlert(string msg, string type = "info")
+            {
+                MessageBoxIcon icon;
+                switch (type)
+                {
+                    case "error": icon = MessageBoxIcon.Error; break;
+                    case "warning": icon = MessageBoxIcon.Warning; break;
+                    case "info":
+                    default: icon = MessageBoxIcon.Information; break;
+                }
+                MessageBox.Show(msg, this.appName, MessageBoxButtons.OK, icon);
+            }
+
+            public void enableFullScreen()
+            {
+                this.isFullScreenEnabled = true;
+                Properties.Settings.Default.msgValue = "";
+                Properties.Settings.Default.msgName = "enableFullScreen";
+            }
+
+            public void disableFullScreen()
+            {
+                this.isFullScreenEnabled = false;
+                Properties.Settings.Default.msgValue = "";
+                Properties.Settings.Default.msgName = "disableFullScreen";
+            }
         }
 
         private void OnBrowserTitleChanged(object sender, TitleChangedEventArgs args)
